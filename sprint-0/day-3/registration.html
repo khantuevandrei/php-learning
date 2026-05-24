@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registration</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <h1>Registration</h1>
+    <main>
+      <form action="/submit" method="post">
+        <label for="username">Username:</label>
+        <input
+          type="text"
+          name="username"
+          id="username"
+          minlength="3"
+          maxlength="50"
+          required
+        />
+
+        <label for="email">Email:</label>
+        <input type="email" name="email" id="email" required />
+
+        <fieldset>
+          <legend>Password</legend>
+          <label for="pass">Enter password:</label>
+          <input type="password" name="pass" id="pass" minlength="8" required />
+          <label for="confirmPass">Confirm password:</label>
+          <input
+            type="password"
+            name="confirmPass"
+            id="confirmPass"
+            minlength="8"
+            required
+          />
+        </fieldset>
+
+        <label for="birthDate">Birth date:</label>
+        <input
+          type="date"
+          name="birthDate"
+          id="birthDate"
+          min="1906-05-24"
+          max="2026-05-24"
+        />
+
+        <label for="data">Agree to data processing:</label>
+        <input type="checkbox" name="data" id="data" />
+
+        <button type="submit">Register</button>
+      </form>
+    </main>
+  </body>
+</html>
