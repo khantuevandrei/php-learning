@@ -1,0 +1,199 @@
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: Arial, sans-serif;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem;
+  border-bottom: 1px solid black;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.header-right > div {
+  display: flex;
+  gap: 0.2rem;
+}
+
+p {
+  margin: 0;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.filter {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  border-bottom: 1px solid black;
+}
+
+button {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: 0.2rem;
+  font-size: 1rem;
+}
+
+button:hover {
+  border: 1px solid black;
+}
+
+main {
+  flex: 1;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem;
+  border: 1px solid black;
+  border-radius: 0.2rem;
+}
+
+.card input {
+  margin: 0;
+}
+
+.task-overdue {
+  background-color: #ffb8b8;
+}
+
+.task-high {
+  border: 2px solid red;
+}
+
+.task-medium {
+  border: 2px solid blue;
+}
+
+.task-low {
+  border: 2px solid green;
+}
+
+.task-done {
+  text-decoration: line-through;
+  background-color: #ddd;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: #fff;
+  border-radius: 0.2rem;
+  width: 80%;
+  padding: 1rem 0;
+}
+
+.modal-header {
+  display: grid;
+  grid-template-columns: 1fr 10fr 1fr;
+  padding: 0 1rem;
+  padding-bottom: 0.5rem;
+}
+
+.modal-close {
+  font-size: 1.5rem;
+}
+
+.hidden {
+  display: none;
+}
+
+/* Form */
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+h2 {
+  text-align: center;
+}
+
+form div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+fieldset {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+legend {
+  text-align: center;
+  margin-bottom: 0.3rem;
+}
+
+fieldset > div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+fieldset div input {
+  margin: 0;
+}
+
+form button {
+  width: fit-content;
+  align-self: center;
+}
+
+footer {
+  border-top: 1px solid black;
+  display: flex;
+  justify-content: center;
+}
