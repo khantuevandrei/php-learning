@@ -110,6 +110,10 @@ main {
   background-color: #ddd;
 }
 
+.card-delete {
+  text-decoration: none;
+}
+
 /* Modal */
 .modal-overlay {
   position: fixed;
