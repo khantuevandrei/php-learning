@@ -1,0 +1,11 @@
+{
+    "name": "student/php-journey",
+    "description": "Learning PHP backend development",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "require": {}
+}
