@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task manager</title>
+    <link rel="stylesheet" href="./style.css" />
+    <script src="./app.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <div class="header-left">
+        <h1>Task manager</h1>
+      </div>
+
+      <div class="header-right">
+        <div>
+          <p>Total:</p>
+          <p class="tasks-total">10</p>
+        </div>
+
+        <div>
+          <p>Active:</p>
+          <p class="tasks-active">4</p>
+        </div>
+
+        <div>
+          <p>Completed:</p>
+          <p class="tasks-completed">6</p>
+        </div>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="filter">
+        <button class="modal-open">New</button>
+        <button class="all-tasks">All</button>
+        <button class="active-tasks">Active</button>
+        <button class="completed-tasks">Completed</button>
+      </div>
+
+      <main class="main">
+        <div class="card task-done task-medium">
+          <h3 class="card-title">Title</h3>
+          <fieldset>
+            <legend>Priority:</legend>
+            <div>
+              <label for="high">High</label>
+              <input type="radio" name="priority" id="high" />
+            </div>
+            <div>
+              <label for="medium">Medium</label>
+              <input type="radio" name="priority" id="medium" />
+            </div>
+            <div>
+              <label for="low">Low</label>
+              <input type="radio" name="priority" id="low" />
+            </div>
+          </fieldset>
+          <p class="card-date">Due date: 2026/04/12</p>
+          <input type="checkbox" name="card-complete" id="card-complete" />
+          <button>Delete</button>
+        </div>
+        <div class="card task-overdue task-high">
+          <h3 class="card-title">Title</h3>
+          <fieldset>
+            <legend>Priority:</legend>
+            <div>
+              <label for="high">High</label>
+              <input type="radio" name="priority" id="high" />
+            </div>
+            <div>
+              <label for="medium">Medium</label>
+              <input type="radio" name="priority" id="medium" />
+            </div>
+            <div>
+              <label for="low">Low</label>
+              <input type="radio" name="priority" id="low" />
+            </div>
+          </fieldset>
+          <p class="card-date">Due date: 2026/04/12</p>
+          <input type="checkbox" name="card-complete" id="card-complete" />
+          <button>Delete</button>
+        </div>
+        <div class="card task-medium">
+          <h3 class="card-title">Title</h3>
+          <fieldset>
+            <legend>Priority:</legend>
+            <div>
+              <label for="high">High</label>
+              <input type="radio" name="priority" id="high" />
+            </div>
+            <div>
+              <label for="medium">Medium</label>
+              <input type="radio" name="priority" id="medium" />
+            </div>
+            <div>
+              <label for="low">Low</label>
+              <input type="radio" name="priority" id="low" />
+            </div>
+          </fieldset>
+          <p class="card-date">Due date: 2026/04/12</p>
+          <input type="checkbox" name="card-complete" id="card-complete" />
+          <button>Delete</button>
+        </div>
+        <div class="card task-low task-done task-overdue">
+          <h3 class="card-title">Title</h3>
+          <fieldset>
+            <legend>Priority:</legend>
+            <div>
+              <label for="high">High</label>
+              <input type="radio" name="priority" id="high" />
+            </div>
+            <div>
+              <label for="medium">Medium</label>
+              <input type="radio" name="priority" id="medium" />
+            </div>
+            <div>
+              <label for="low">Low</label>
+              <input type="radio" name="priority" id="low" />
+            </div>
+          </fieldset>
+          <p class="card-date">Due date: 2026/04/12</p>
+          <input type="checkbox" name="card-complete" id="card-complete" />
+          <button>Delete</button>
+        </div>
+      </main>
+    </div>
+
+    <footer><p>© 2026</p></footer>
+  </body>
+
+  <div class="modal-overlay hidden">
+    <!-- Modal box -->
+    <div class="modal" role="dialog">
+      <div class="modal-header">
+        <div></div>
+        <h2>New Task</h2>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div>
+        <form class="task-form">
+          <div>
+            <label for="task-name">Task name:</label>
+            <input type="text" name="task-name" id="task-name" required />
+          </div>
+          <fieldset>
+            <legend>Priority:</legend>
+            <div>
+              <label for="high">High</label>
+              <input type="radio" name="priority" id="high" />
+            </div>
+            <div>
+              <label for="medium">Medium</label>
+              <input type="radio" name="priority" id="medium" />
+            </div>
+            <div>
+              <label for="low">Low</label>
+              <input type="radio" name="priority" id="low" />
+            </div>
+          </fieldset>
+          <div>
+            <label for="due-date">Due date:</label>
+            <input type="date" name="due-date" id="due-date" />
+          </div>
+          <button type="submit" class="add-task">Add</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</html>
