@@ -32,18 +32,17 @@ class UserController
         require 'views/form.php';
     }
 
-    // creating
-    public function store()
+    // Validation
+    private function validate(array $data): array
     {
+        $errors = [];
+
         $name = $_POST['name'] ?? '';
         $email = $_POST['email'] ?? '';
         $age = $_POST['age'] ?? '';
-        $errors = [];
 
-        // Validation
         if ($name === '') {
             $errors['name'] = 'Name required';
-            $_SESSION['errors'] = $errors;
         }
 
         if ($email === '') {
@@ -58,6 +57,18 @@ class UserController
             $errors['age'] = 'Age must be between 1 and 120';
         }
 
+        return $errors;
+    }
+
+    // Creating
+    public function store()
+    {
+        $name = $_POST['name'] ?? '';
+        $email = $_POST['email'] ?? '';
+        $age = $_POST['age'] ?? '';
+
+        $errors = $this->validate($_POST);
+
         // If errors are present
         if (!empty($errors)) {
             $_SESSION['errors'] = $errors;
@@ -66,63 +77,67 @@ class UserController
             exit;
         }
 
-        $statement = $this->pdo->prepare("
-            INSERT INTO users (name, email, age)
-            VALUES (:name, :email, :age)
-        ");
+        try {
+            $statement = $this->pdo->prepare("
+                INSERT INTO users (name, email, age)
+                VALUES (:name, :email, :age)
+            ");
 
-        $statement->execute([
-            ':name' => $name,
-            ':email' => $email,
-            ':age' => $age
-        ]);
+            $statement->execute([
+                ':name' => $name,
+                ':email' => $email,
+                ':age' => $age
+            ]);
 
-        $_SESSION['success'] = 'User created';
+            $_SESSION['success'] = 'User created';
 
-        header("Location: index.php");
-        exit;
+            header("Location: index.php");
+            exit;
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            header('Location: index.php');
+            exit;
+        }
     }
 
     // edit form
     public function edit($id)
     {
-        $statement = $this->pdo->prepare("
+        if ($id <= 0) die('Invalid ID');
+
+        try {
+            $statement = $this->pdo->prepare("
             SELECT * FROM users
             WHERE id = :id
         ");
 
-        $statement->execute([':id' => $id]);
+            $statement->execute([':id' => $id]);
 
-        $user = $statement->fetch();
+            $user = $statement->fetch();
 
-        require 'views/form.php';
+            if (!$user) {
+                echo 'User not found';
+                exit;
+            }
+
+            require 'views/form.php';
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            header('Location: index.php');
+            exit;
+        }
     }
 
     // editing
     public function update($id)
     {
+        if ($id <= 0) die('Invalid ID');
+
         $name = $_POST['name'] ?? '';
         $email = $_POST['email'] ?? '';
         $age = $_POST['age'] ?? '';
-        $errors = [];
 
-        // Validation
-        if ($name === '') {
-            $errors['name'] = 'Name required';
-            $_SESSION['errors'] = $errors;
-        }
-
-        if ($email === '') {
-            $errors['email'] = 'Email required';
-        } elseif (!str_contains($email, '@')) {
-            $errors['email'] = 'Incorrect email format';
-        }
-
-        if ($age === '') {
-            $errors['age'] = 'Age required';
-        } elseif ($age < 1 || $age > 120) {
-            $errors['age'] = 'Must be between 1 and 120';
-        }
+        $errors = $this->validate($_POST);
 
         // If errors are present
         if (!empty($errors)) {
@@ -132,37 +147,51 @@ class UserController
             exit;
         }
 
-        $statement = $this->pdo->prepare("
-            UPDATE users
-            SET name = :name, email = :email, age = :age
-            WHERE id = :id
-        ");
+        try {
+            $statement = $this->pdo->prepare("
+                UPDATE users
+                SET name = :name, email = :email, age = :age
+                WHERE id = :id
+            ");
 
-        $statement->execute([
-            ':name' => $name,
-            ':email' => $email,
-            ':age' => $age,
-            ':id' => $id
-        ]);
+            $statement->execute([
+                ':name' => $name,
+                ':email' => $email,
+                ':age' => $age,
+                ':id' => $id
+            ]);
 
-        $_SESSION['success'] = 'User updated';
+            $_SESSION['success'] = 'User updated';
 
-        header("Location: index.php");
-        exit;
+            header("Location: index.php");
+            exit;
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            header('Location: index.php');
+            exit;
+        }
     }
 
     // Deleting
     public function delete($id)
     {
-        $statement = $this->pdo->prepare("
-            DELETE FROM users
-            WHERE id = :id
-        ");
+        if ($id <= 0) die('Invalid ID');
 
-        $statement->execute([':id' => $id]);
+        try {
+            $statement = $this->pdo->prepare("
+                DELETE FROM users
+                WHERE id = :id
+            ");
 
-        $_SESSION['success'] = 'User deleted';
-        header("Location: index.php");
-        exit;
+            $statement->execute([':id' => $id]);
+
+            $_SESSION['success'] = 'User deleted';
+            header("Location: index.php");
+            exit;
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            header('Location: index.php');
+            exit;
+        }
     }
 }
