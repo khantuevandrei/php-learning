@@ -1,0 +1,9 @@
+{
+    "stubs": [
+        "Core",
+        "date",
+        "standard",
+        "pgsql",
+        "mbstring"
+    ]
+}

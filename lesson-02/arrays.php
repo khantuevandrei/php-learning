@@ -4,11 +4,7 @@ declare(strict_types=1);
 
 $daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
-echo $daysOfWeek[1];
-
 $user = ['name' => 'John', 'age' => 32, 'email' => 'john@example.com'];
-
-echo $user['email'];
 
 $users = [
     ['name' => 'Clint', 'age' => 19, 'email' => 'clint@example.com'],
@@ -16,5 +12,36 @@ $users = [
     ['name' => 'Mary', 'age' => 26, 'email' => 'mary@example.com'],
 ];
 
-echo $users[1]['name'];
-echo $users[2]['email'];
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($users as $user): ?>
+                <tr>
+                    <td><?= $user['name'] ?></td>
+                    <td><?= $user['age'] ?></td>
+                    <td><?= $user['email'] ?></td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</body>
+
+</html>
