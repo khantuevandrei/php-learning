@@ -2,6 +2,10 @@
 
 declare(strict_types=1);
 
+namespace App\Controllers;
+
+use PDO;
+
 class UserController
 {
     private PDO $pdo;
@@ -21,7 +25,7 @@ class UserController
 
         $users = $statement->fetchAll();
 
-        require 'views/list.php';
+        require __DIR__ . '/../../views/list.php';
     }
 
     // creation form
@@ -29,7 +33,7 @@ class UserController
     {
         $user = null;
 
-        require 'views/form.php';
+        require __DIR__ . '/../../views/form.php';
     }
 
     // Validation
@@ -73,7 +77,7 @@ class UserController
         if (!empty($errors)) {
             $_SESSION['errors'] = $errors;
 
-            header("Location: index.php?action=create");
+            header("Location: /users/create");
             exit;
         }
 
@@ -91,11 +95,11 @@ class UserController
 
             $_SESSION['success'] = 'User created';
 
-            header("Location: index.php");
+            header("Location: /");
             exit;
         } catch (PDOException $e) {
             error_log($e->getMessage());
-            header('Location: index.php');
+            header('Location: /');
             exit;
         }
     }
@@ -120,10 +124,10 @@ class UserController
                 exit;
             }
 
-            require 'views/form.php';
+            require __DIR__ . '/../../views/form.php';
         } catch (PDOException $e) {
             error_log($e->getMessage());
-            header('Location: index.php');
+            header('Location: /');
             exit;
         }
     }
@@ -143,7 +147,7 @@ class UserController
         if (!empty($errors)) {
             $_SESSION['errors'] = $errors;
 
-            header("Location: index.php?action=edit&id=$id");
+            header("Location: /users/{$id}/edit");
             exit;
         }
 
@@ -163,11 +167,11 @@ class UserController
 
             $_SESSION['success'] = 'User updated';
 
-            header("Location: index.php");
+            header("Location: /");
             exit;
         } catch (PDOException $e) {
             error_log($e->getMessage());
-            header('Location: index.php');
+            header('Location: /');
             exit;
         }
     }
@@ -186,11 +190,11 @@ class UserController
             $statement->execute([':id' => $id]);
 
             $_SESSION['success'] = 'User deleted';
-            header("Location: index.php");
+            header("Location: /");
             exit;
         } catch (PDOException $e) {
             error_log($e->getMessage());
-            header('Location: index.php');
+            header('Location: /');
             exit;
         }
     }

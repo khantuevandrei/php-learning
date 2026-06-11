@@ -18,17 +18,17 @@
     <?php unset($_SESSION['errors']); ?>
 <?php endif; ?>
 
-<a href="index.php?action=create">Create</a>
+<a href="/users/create">Create</a>
 
 <ul>
     <?php foreach ($users as $user): ?>
         <li>
             <?= htmlspecialchars($user['name']) ?>
 
-            <a href="index.php?action=edit&id=<?= $user['id'] ?>">Edit</a>
+            <a href="/users/<?= $user['id'] ?>/edit">Edit</a>
 
             <form method="post"
-                action="index.php?action=delete&id=<?= $user['id'] ?>"
+                action="/users/<?= $user['id'] ?>/delete"
                 style="display:inline"
                 onsubmit="return confirm('Delete?')">
                 <button type="submit">Delete</button>
