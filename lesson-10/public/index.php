@@ -11,6 +11,8 @@ use App\Controllers\ArticleController;
 use App\Controllers\UserController;
 use App\Core\Database;
 use App\Core\View;
+use App\Repositories\UserRepository;
+use App\Repositories\ArticleRepository;
 
 View::setViewsPath(__DIR__ . '/../views');
 
@@ -21,8 +23,10 @@ try {
     exit;
 }
 
-$aController = new ArticleController($pdo);
-$uController = new UserController($pdo);
+$aRepository = new ArticleRepository($pdo);
+$aController = new ArticleController($aRepository);
+$uRepository = new UserRepository($pdo);
+$uController = new UserController($uRepository);
 $router = new Router();
 
 // All articles

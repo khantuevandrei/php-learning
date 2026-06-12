@@ -4,46 +4,39 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
-use App\Core\View;
-use PDO;
+use App\Core\Controller;
+use App\Core\Logger;
+use App\Repositories\ArticleRepository;
 use PDOException;
 
-class ArticleController
+class ArticleController extends Controller
 {
-    private PDO $pdo;
+    private ArticleRepository $repository;
 
-    public function __construct(PDO $pdo)
+    public function __construct(ArticleRepository $repository)
     {
-        $this->pdo = $pdo;
+        $this->repository = $repository;
     }
 
     // List of articles
     public function index()
     {
-        $query = $this->pdo->query("
-            SELECT * FROM articles
-            ORDER BY id DESC
-        ");
+        $articles = $this->repository->all();
 
-        $articles = $query->fetchAll();
-
-        echo View::render('articles/list', [
-            'articles' => $articles,
-            'layout' => 'layout'
-        ]);
+        $this->view('articles/list', ['articles' => $articles]);
     }
 
     // Creation form
     public function create()
     {
-        echo View::render('articles/form', [
+        $this->view('articles/form', [
             'article' => null,
             'isEdit' => false
-        ], 'layout');
+        ]);
     }
 
     // Validation
-    public function validate(array $data): array
+    protected function validate(array $data): array
     {
         $errors = [];
 
@@ -72,67 +65,50 @@ class ArticleController
         if (!empty($errors)) {
             $_SESSION['errors'] = $errors;
 
-            header("Location: /articles/create");
-            exit;
+            $this->redirect('/articles/create');
         }
 
         try {
-            $query = $this->pdo->prepare("
-                INSERT INTO articles (title, content)
-                VALUES (:title, :content)
-            ");
-
-            $query->execute([
-                ':title' => $title,
-                ':content' => $content
+            $this->repository->create([
+                'title' => $title,
+                'content' => $content
             ]);
 
             $_SESSION['success'] = 'Article created';
 
-            header("Location: /");
-            exit;
+            $this->redirect('/');
         } catch (PDOException $e) {
-            error_log($e->getMessage());
-            header('Location: /');
-            exit;
+            Logger::log($e->getMessage());
+            $this->redirect('/');
         }
     }
 
     // Edit form
     public function edit($id)
     {
-        if ($id <= 0) die('Invalid ID');
+        if ($id <= 0) $this->notFound('Invalid ID');
 
         try {
-            $query = $this->pdo->prepare("
-                SELECT * FROM articles
-                WHERE id = :id
-            ");
-
-            $query->execute([':id' => $id]);
-
-            $article = $query->fetch();
+            $article = $this->repository->find($id);
 
             if (!$article) {
-                echo 'Article not found';
-                exit;
+                $this->notFound('Article not found');
             }
 
-            echo View::render('articles/form', [
+            $this->view('articles/form', [
                 'article' => $article,
                 'isEdit' => true
-            ], 'layout');
+            ]);
         } catch (PDOException $e) {
-            error_log($e->getMessage());
-            header('Location: /');
-            exit;
+            Logger::log($e->getMessage());
+            $this->redirect('/');
         }
     }
 
     // Updating
     public function update($id)
     {
-        if ($id <= 0) die('Invalid ID');
+        if ($id <= 0) $this->notFound('Invalid ID');
 
         $title = $_POST['title'] ?? '';
         $content = $_POST['content'] ?? '';
@@ -142,54 +118,37 @@ class ArticleController
         if (!empty($errors)) {
             $_SESSION['errors'] = $errors;
 
-            header("Location: /articles/{$id}/edit");
-            exit;
+            $this->redirect("/articles/{$id}/edit");
         }
 
         try {
-            $query = $this->pdo->prepare("
-                UPDATE articles
-                SET title = :title, content = :content
-                WHERE id = :id
-            ");
-
-            $query->execute([
-                ':title' => $title,
-                ':content' => $content,
-                ':id' => $id
+            $this->repository->update($id, [
+                'title' => $title,
+                'content' => $content
             ]);
 
             $_SESSION['success'] = 'Article updated';
 
-            header("Location: /");
-            exit;
+            $this->redirect('/');
         } catch (PDOException $e) {
-            error_log($e->getMessage());
-            header('Location: /');
-            exit;
+            Logger::log($e->getMessage());
+            $this->redirect('/');
         }
     }
 
     // Deleting
     public function delete($id)
     {
-        if ($id <= 0) die('Invalid ID');
+        if ($id <= 0) $this->notFound('Invalid ID');
 
         try {
-            $query = $this->pdo->prepare("
-                DELETE FROM articles
-                WHERE id = :id
-            ");
-
-            $query->execute([':id' => $id]);
+            $this->repository->delete($id);
 
             $_SESSION['success'] = 'Article deleted';
-            header('Location: /');
-            exit;
+            $this->redirect('/');
         } catch (PDOException $e) {
-            error_log($e->getMessage());
-            header('Location: /');
-            exit;
+            Logger::log($e->getMessage());
+            $this->redirect('/');
         }
     }
 }

@@ -4,46 +4,39 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
-use App\Core\View;
+use App\Core\Controller;
+use App\Core\Logger;
+use App\Repositories\UserRepository;
+use PDOException;
 
-use PDO;
-
-class UserController
+class UserController extends Controller
 {
-    private PDO $pdo;
+    private UserRepository $repository;
 
-    public function __construct(PDO $pdo)
+    public function __construct(UserRepository $repository)
     {
-        $this->pdo = $pdo;
+        $this->repository = $repository;
     }
 
-    // list of users
+    // List of users
     public function index()
     {
-        $statement = $this->pdo->query("
-            SELECT * FROM users
-            ORDER BY id DESC
-        ");
+        $users = $this->repository->all();
 
-        $users = $statement->fetchAll();
+        $this->view('users/list', ['users' => $users]);
+    }
 
-        echo View::render('users/list', [
-            'users' => $users,
-            'layout' => 'layout'
+    // Creation form
+    public function create()
+    {
+        $this->view('users/form', [
+            'user' => null,
+            'isEdit' => false
         ]);
     }
 
-    // creation form
-    public function create()
-    {
-        echo View::render('users/form', [
-            'user' => null,
-            'isEdit' => false
-        ], 'layout');
-    }
-
     // Validation
-    private function validate(array $data): array
+    protected function validate(array $data): array
     {
         $errors = [];
 
@@ -70,7 +63,7 @@ class UserController
         return $errors;
     }
 
-    // Creating
+    // Storing
     public function store()
     {
         $name = $_POST['name'] ?? '';
@@ -79,72 +72,54 @@ class UserController
 
         $errors = $this->validate($_POST);
 
-        // If errors are present
         if (!empty($errors)) {
             $_SESSION['errors'] = $errors;
 
-            header("Location: /users/create");
-            exit;
+            $this->redirect('/users/create');
         }
 
         try {
-            $statement = $this->pdo->prepare("
-                INSERT INTO users (name, email, age)
-                VALUES (:name, :email, :age)
-            ");
-
-            $statement->execute([
-                ':name' => $name,
-                ':email' => $email,
-                ':age' => $age
+            $this->repository->create([
+                'name' => $name,
+                'email' => $email,
+                'age' => $age
             ]);
 
             $_SESSION['success'] = 'User created';
 
-            header("Location: /");
-            exit;
+            $this->redirect('/users');
         } catch (PDOException $e) {
-            error_log($e->getMessage());
-            header('Location: /');
-            exit;
+            Logger::log($e->getMessage());
+            $this->redirect('/');
         }
     }
 
-    // edit form
+    // Edit form
     public function edit($id)
     {
-        if ($id <= 0) die('Invalid ID');
+        if ($id <= 0) $this->notFound('Invalid ID');
 
         try {
-            $statement = $this->pdo->prepare("
-            SELECT * FROM users
-            WHERE id = :id
-        ");
-
-            $statement->execute([':id' => $id]);
-
-            $user = $statement->fetch();
+            $user = $this->repository->find($id);
 
             if (!$user) {
-                echo 'User not found';
-                exit;
+                $this->notFound('User not found');
             }
 
-            echo View::render('users/form', [
+            $this->view('users/form', [
                 'user' => $user,
                 'isEdit' => true
-            ], 'layout');
+            ]);
         } catch (PDOException $e) {
-            error_log($e->getMessage());
-            header('Location: /');
-            exit;
+            Logger::log($e->getMessage());
+            $this->redirect('/');
         }
     }
 
-    // editing
+    // Updating
     public function update($id)
     {
-        if ($id <= 0) die('Invalid ID');
+        if ($id <= 0) $this->notFound('Invalid ID');
 
         $name = $_POST['name'] ?? '';
         $email = $_POST['email'] ?? '';
@@ -156,55 +131,38 @@ class UserController
         if (!empty($errors)) {
             $_SESSION['errors'] = $errors;
 
-            header("Location: /users/{$id}/edit");
-            exit;
+            $this->redirect("/users/{$id}/edit");
         }
 
         try {
-            $statement = $this->pdo->prepare("
-                UPDATE users
-                SET name = :name, email = :email, age = :age
-                WHERE id = :id
-            ");
-
-            $statement->execute([
-                ':name' => $name,
-                ':email' => $email,
-                ':age' => $age,
-                ':id' => $id
+            $this->repository->update($id, [
+                'name' => $name,
+                'email' => $email,
+                'age' => $age
             ]);
 
             $_SESSION['success'] = 'User updated';
 
-            header("Location: /");
-            exit;
+            $this->redirect('/');
         } catch (PDOException $e) {
-            error_log($e->getMessage());
-            header('Location: /');
-            exit;
+            Logger::log($e->getMessage());
+            $this->redirect('/');
         }
     }
 
     // Deleting
     public function delete($id)
     {
-        if ($id <= 0) die('Invalid ID');
+        if ($id <= 0) $this->notFound('Invalid ID');
 
         try {
-            $statement = $this->pdo->prepare("
-                DELETE FROM users
-                WHERE id = :id
-            ");
-
-            $statement->execute([':id' => $id]);
+            $this->repository->delete($id);
 
             $_SESSION['success'] = 'User deleted';
-            header("Location: /");
-            exit;
+            $this->redirect('/');
         } catch (PDOException $e) {
-            error_log($e->getMessage());
-            header('Location: /');
-            exit;
+            Logger::log($e->getMessage());
+            $this->redirect('/');
         }
     }
 }
