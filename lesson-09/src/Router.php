@@ -52,7 +52,7 @@ class Router
         foreach ($this->routes[$method] as $path => $handler) {
             // Conditionals
             $pattern = preg_replace('/\{(\w+)\}/', '(?P<$1>\d+)', $path);
-            $pattern = '#^' . '$#';
+            $pattern = '#^' . $pattern . '$#';
 
             // Checking matches
             if (preg_match($pattern, $uri, $matches)) {
