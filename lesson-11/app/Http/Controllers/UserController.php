@@ -34,11 +34,14 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
+        $this->authorize('update', $user);
         return view('users.form', ['user' => $user, 'isEdit' => true]);
     }
 
     public function update(Request $request, User $user)
     {
+        $this->authorize('update', $user);
+
         $validate = $request->validate([
             'name' => 'required|string|max:255',
             'password' => 'nullable|min:6',
@@ -57,6 +60,8 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
+        $this->authorize('delete', $user);
+
         $user->delete();
 
         return redirect('/users')->with('success', 'User deleted');

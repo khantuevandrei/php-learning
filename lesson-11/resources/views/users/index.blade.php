@@ -15,13 +15,14 @@
             </ul>
             @endif
 
-            <a href="/users/{{ $user->id }}/articles/create">Add Article</a>
+            @can('update', $user)
             <a href="/users/{{ $user->id }}/edit">Edit</a>
             <form action="/users/{{ $user->id }}" method="POST">
                 @csrf
                 @method('DELETE')
                 <button type="submit">Delete</button>
             </form>
+            @endcan
         </li>
         @endforeach
     </ul>

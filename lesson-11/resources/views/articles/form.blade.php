@@ -7,7 +7,7 @@
     </ul>
     @endif
 
-    <form method="POST" action="/users/{{ $user->id }}/articles">
+    <form method="POST" action="/articles">
         @csrf
 
         <label for="title">Title:</label>

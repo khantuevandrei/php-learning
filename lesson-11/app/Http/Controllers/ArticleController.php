@@ -7,19 +7,19 @@ use App\Models\User;
 
 class ArticleController extends Controller
 {
-    public function create(User $user)
+    public function create()
     {
-        return view('articles.form', ['user' => $user, 'isEdit' => false]);
+        return view('articles.form', ['user' => auth()->user(), 'isEdit' => false]);
     }
 
-    public function store(Request $request, User $user)
+    public function store(Request $request)
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string'
         ]);
 
-        $user->articles()->create($validated);
+        auth()->user()->articles()->create($validated);
 
         return redirect('/users')->with('success', 'Article created');
     }
