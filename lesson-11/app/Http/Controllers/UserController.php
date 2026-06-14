@@ -3,13 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 
 class UserController extends Controller
 {
     public function index()
     {
-        $users = User::with('articles')->get();
+        $users = User::with('articles')->paginate(5);
         return view('users.index', ['users' => $users]);
     }
 
@@ -18,16 +19,9 @@ class UserController extends Controller
         return view('users.form', ['isEdit' => false]);
     }
 
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
-        $validate = $request->validate([
-            'name' => 'required|string|max:255',
-            'password' => 'required|min:6',
-            'email' => 'required|email|unique:users,email',
-            'age' => 'required|integer|min:1|max:120'
-        ]);
-
-        User::create($validate);
+        User::create($request->validated());
 
         return redirect('/users')->with('success', 'User created');
     }
@@ -38,22 +32,15 @@ class UserController extends Controller
         return view('users.form', ['user' => $user, 'isEdit' => true]);
     }
 
-    public function update(Request $request, User $user)
+    public function update(UpdateUserRequest $request, User $user)
     {
-        $this->authorize('update', $user);
+        $validated = $request->validated();
 
-        $validate = $request->validate([
-            'name' => 'required|string|max:255',
-            'password' => 'nullable|min:6',
-            'email' => 'required|email|unique:users,email,' . $user->id,
-            'age' => 'required|integer|min:1|max:120'
-        ]);
-
-        if (empty($validate['password'])) {
-            unset($validate['password']);
+        if (empty($validated['password'])) {
+            unset($validated['password']);
         }
 
-        $user->update($validate);
+        $user->update($validated);
 
         return redirect('/users')->with('success', 'User updated');
     }

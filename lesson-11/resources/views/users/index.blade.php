@@ -11,6 +11,14 @@
             <ul>
                 @foreach ($user->articles as $article)
                 <li>{{ $article->title }}: {{ $article->content }}</li>
+                @can('update', $article)
+                <a href="/articles/{{ $article->id }}/edit">Edit Article</a>
+                <form action="/articles/{{ $article->id }}" method="POST" style="display:inline">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit">Delete Article</button>
+                </form>
+                @endcan
                 @endforeach
             </ul>
             @endif
@@ -27,4 +35,5 @@
         @endforeach
     </ul>
 
+    {{ $users->links() }}
 </x-layout>
