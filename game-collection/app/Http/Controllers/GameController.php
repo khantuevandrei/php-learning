@@ -3,16 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Game;
+use Illuminate\Support\Facades\Cache;
 
 class GameController extends Controller
 {
     public function index()
     {
         $games = Game::paginate(10);
-
         $ownedGameIds = auth()->user()->games()->pluck('game_id')->toArray();
-
-        return view('games.index', ['games' => $games, 'ownedGameIds' => $ownedGameIds]);
+        return view('games.index', compact('games', 'ownedGameIds'));
     }
 
     public function show(Game $game)
